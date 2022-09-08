@@ -1,22 +1,56 @@
 #include<stdio.h>
 
-int	main(void)
+void	printCharacter(char	*byte)
 {
-	char	c = 'h';
-	int		binary = 256;
-	int		bits = 8;
-	while(bits != 0)
+	int		total = 0;
+	int		i = 0;
+	int		base = 128;
+
+	while(byte[i])
 	{
-		if(c <= binary)
+		if(byte[i] == '1')
 		{
-			printf("0");
+			total = total + base;
+		}
+		base = base / 2;
+		i++;
+	}
+	printf("%c", total);
+}
+
+void	sendBits(char c)
+{
+	int		binary = 128;
+	int		bit = 0;
+	char	byte[8];
+	while(bit < 8)
+	{
+		if(c >= binary)
+		{
+			// printf("1");
+			byte[bit] = '1';
+			c = c - binary;
 		}
 		else
 		{
-			printf("1");
-			c = c - binary;
+			// printf("0");
+			byte[bit] = '0';
 		}
 		binary = binary / 2;
-		bits--;
+		bit++;
+		if(bit == 8)
+			printCharacter(byte);
+	}
+}
+
+int	main(void)
+{
+	char	*str = "h😀h";
+	int		i = 0;
+
+	while(str[i])
+	{
+		sendBits(str[i]);
+		i++;
 	}
 }

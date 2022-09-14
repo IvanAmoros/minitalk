@@ -1,6 +1,7 @@
-#include <unistd.h>
 #include <stdio.h>
 #include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 void	printCharacter(char	*byte)
 {
@@ -17,7 +18,28 @@ void	printCharacter(char	*byte)
 		base = base / 2;
 		i++;
 	}
-	printf("%c", total);
+	write(1, &total, 1);
+}
+
+void	getBites(int bit)
+{
+	static char	character[8];
+	static int	i = 0;
+
+	if(bit == SIGUSR1)
+	{
+		character[i] = '1';
+	}
+	else if(bit == SIGUSR2)
+	{
+		character[i] = '0';
+	}
+	i++;
+	if(i == 8)
+	{
+		i = 0;
+		printCharacter(character);
+	}
 }
 
 void	putnbr(int PID)
@@ -25,16 +47,10 @@ void	putnbr(int PID)
 	char	numchar;
 	int		divisor;
 	int		nb;
-	char	*txt;
 
 	nb = PID;
 	divisor = 1;
-	txt = "PID: ";
-	while(*txt)
-	{
-		write(1, txt, 1);
-		txt++;
-	}
+	write(1, "PID: ", 6);
 	while(PID >= 10)
 	{
 		PID /= 10;
@@ -52,12 +68,9 @@ void	putnbr(int PID)
 
 int	main(void)
 {
-	int	PID;
-	int	test = 2000000;
-
 	putnbr(getpid());
-	signal(SIGUSR1, printCharacter);
-	signal(SIGUSR2, printCharacter);
+	signal(SIGUSR1, getBites);
+	signal(SIGUSR2, getBites);
 	while(1)
 		sleep(1);
 	return(0);

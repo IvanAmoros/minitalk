@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void	errorHandler(int argc, char **argv)
 {
@@ -29,7 +30,7 @@ int	ft_atoi(char *str)
 	nbr = 0;
 	while(str[i])
 	{
-		nbr = nbr * 10 + str[1] - '0';
+		nbr = nbr * 10 + str[i] - '0';
 		i++;
 	}
 	return(nbr);
@@ -43,14 +44,15 @@ void	sendBits(int pidserver, char c)
 	{
 		if(c >= binary)
 		{
-			kill(pidserver, 1);
+			kill(pidserver, SIGUSR1);
 			c = c - binary;
 		}
 		else
 		{
-			kill(pidserver, 0);
+			kill(pidserver, SIGUSR2);
 		}
 		binary = binary / 2;
+		usleep(50);
 		bit++;
 	}
 }
@@ -63,8 +65,6 @@ int	main(int argc, char **argv)
 	errorHandler(argc, argv);
 	pidserver = ft_atoi(argv[1]);
 	while(argv[2][i])
-	{
-		sendBits(pidserver, argv[2][i]);
-		i++;
-	}
+		sendBits(pidserver, argv[2][i++]);
+	sendBits(pidserver, '\n');
 }

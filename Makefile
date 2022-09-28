@@ -6,6 +6,7 @@ SERVER_BNS = server_bonus
 
 LIB_DIR = Libft/
 LIB = ${LIB_DIR}libft.a
+PRINTF = ../../42cursus/Printf/libftprintf.a
 
 CLIENT_SRC = client.c
 SERVER_SRC = server.c
@@ -24,9 +25,10 @@ SERVER_DPS_BNS = ${addsuffix .d, ${basename ${SERVER_OBJ_BNS}}}
 OBJ_DIR = obj/
 
 CFLAGS = -Wall -Wextra -Werror
+XFLAGS = -fsanitize=address -g3
 RM = rm -rf
 
-${OBJ_DIR}%.o: %.c
+${OBJ_DIR}%.o: %.c Makefile
 	mkdir -p ${dir $@}
 	${CC} -MT $@ -MMD ${CFLAGS} -c $< -o $@
 
@@ -35,10 +37,10 @@ all: makelib ${NAME}
 ${NAME}: ${CLIENT_EX} ${SERVER_EX}
 
 ${CLIENT_EX}: ${CLIENT_OBJ}
-	${CC} ${CFLAGS} ${CLIENT_OBJ} ${LIB} -o ${CLIENT_EX}
+	${CC} ${CFLAGS} ${XFLAGS} ${CLIENT_OBJ} ${LIB} ${PRINTF} -o ${CLIENT_EX}
 
 ${SERVER_EX}: ${SERVER_OBJ}
-	${CC} ${CFLAGS} ${SERVER_OBJ} ${LIB} -o ${SERVER_EX}
+	${CC} ${CFLAGS} ${XFLAGS} ${SERVER_OBJ} ${LIB} ${PRINTF} -o ${SERVER_EX}
 
 bonus: makelib ${CLIENT_BNS} ${SERVER_BNS}
 

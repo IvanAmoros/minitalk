@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void	printCharacter(char	*byte)
+int	printCharacter(char	*byte)
 {
 	int		total = 0;
 	int		i = 0;
@@ -12,35 +12,14 @@ void	printCharacter(char	*byte)
 	while(byte[i])
 	{
 		if(byte[i] == '1')
-		{
 			total = total + base;
-		}
 		base = base / 2;
 		i++;
 	}
+	if(total == '\0')
+		return(1);
 	write(1, &total, 1);
-}
-
-void	getBites(int bit)
-{
-	static char	character[8];
-	static int	i = 0;
-
-	if(bit == SIGUSR1)
-	{
-		character[i] = '1';
-
-	}
-	else if(bit == SIGUSR2)
-	{
-		character[i] = '0';
-	}
-	i++;
-	if(i == 8)
-	{
-		i = 0;
-		printCharacter(character);
-	}
+	return(0);
 }
 
 void	putnbr(int PID)
@@ -67,11 +46,42 @@ void	putnbr(int PID)
 	write(1, "\n", 1);
 }
 
+void	printMessage(int sig, siginfo_t *siginfo, void *unused)
+{
+	static char	character[8];
+	static int	i = 0;
+
+	(void)unused;
+	if(sig == SIGUSR1)
+	{
+		character[i++] = '1';
+		kill(siginfo->si_pid, SIGUSR1);
+	}
+	else if(sig == SIGUSR2)
+	{
+		character[i++] = '0';
+		kill(siginfo->si_pid, SIGUSR1);
+	}
+	if(i == 8)
+	{
+		i = 0;
+		if (printCharacter(character) == 1)
+		{
+			write(1, "\n", 1);
+			kill(siginfo->si_pid, SIGUSR2);
+		}
+	}
+}
+
 int	main(void)
 {
+	struct sigaction	reciver;
+
 	putnbr(getpid());
-	signal(SIGUSR1, getBites);
-	signal(SIGUSR2, getBites);
+	reciver.sa_flags = SA_SIGINFO;
+	reciver.sa_sigaction = printMessage;
+	sigaction(SIGUSR1, &reciver, NULL);
+	sigaction(SIGUSR2, &reciver, NULL);
 	while(1)
 		sleep(1);
 	return(0);

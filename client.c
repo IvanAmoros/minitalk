@@ -14,7 +14,7 @@ void	errorHandler(int argc, char **argv)
 	{
 		if (argv[1][i] < '0' || argv[1][i] > '9')
 		{
-			printf("wrong pid\n");
+			write(1, "Wrong pid!\n", 11);
 			exit(EXIT_FAILURE);
 		}
 		i++;
@@ -46,26 +46,28 @@ void	sendBits(int pidserver, unsigned char c)
 		{
 			if (kill(pidserver, SIGUSR1) == -1)
 				exit(EXIT_FAILURE);
+			pause();
 			c = c - binary;
 		}
 		else
 		{
 			if (kill(pidserver, SIGUSR2) == -1)
 				exit(EXIT_FAILURE);
+			pause();
 		}
 		binary = binary / 2;
-		usleep(50);
 		bit++;
+		usleep(50);
 	}
 }
 
 void	recived_bites(int bit)
 {
 	if (bit == SIGUSR1)
-		write(1, "Bit recived!", 12);
+		write(1, "Bit recived!\n", 13);
 	else
 	{
-		write(1, "Message recived correctly!", 28);
+		write(1, "Message recived correctly!\n", 29);
 		exit(EXIT_SUCCESS);
 	}
 }
@@ -77,11 +79,11 @@ int	main(int argc, char **argv)
 
 	errorHandler(argc, argv);
 	pidserver = ft_atoi(argv[1]);
-	while(argv[2][i])
-		sendBits(pidserver, argv[2][i++]);
-	sendBits(pidserver, '\n');
 	signal(SIGUSR1, recived_bites);
 	signal(SIGUSR2, recived_bites);
+	while(argv[2][i])
+		sendBits(pidserver, argv[2][i++]);
+	sendBits(pidserver, argv[2][i]);
 	while(1)
 		pause();
 }

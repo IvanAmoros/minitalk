@@ -82,6 +82,7 @@ int	main(int argc, char **argv)
 	sendBits(pidserver, '\n');
 	signal(SIGUSR1, recived_bites);
 	signal(SIGUSR2, recived_bites);
-	while(1)
-		pause();
+	return(0);
+	// while(1)
+	// 	pause();
 }

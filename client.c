@@ -1,16 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iamoros- <iamoros-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/09/28 23:59:44 by iamoros-          #+#    #+#             */
+/*   Updated: 2022/09/29 00:39:47 by iamoros-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-void	errorHandler(int argc, char **argv)
+void	error_handler(int argc, char **argv)
 {
 	int	i;
 
 	i = 0;
 	if (argc != 3)
 		exit(EXIT_FAILURE);
-	while(argv[1][i])
+	while (argv[1][i])
 	{
 		if (argv[1][i] < '0' || argv[1][i] > '9')
 		{
@@ -28,32 +40,35 @@ int	ft_atoi(char *str)
 
 	i = 0;
 	nbr = 0;
-	while(str[i])
+	while (str[i])
 	{
 		nbr = nbr * 10 + str[i] - '0';
 		i++;
 	}
-	return(nbr);
+	return (nbr);
 }
 
-void	sendBits(int pidserver, unsigned char c)
+void	send_bits(int pidserver, unsigned char c)
 {
-	int		binary = 128;
-	int		bit = 0;
-	while(bit < 8)
+	int	binary;
+	int	bit;
+
+	binary = 128;
+	bit = 0;
+	while (bit < 8)
 	{
-		if(c >= binary)
+		if (c >= binary)
 		{
+			write(1, "1", 1);
 			if (kill(pidserver, SIGUSR1) == -1)
 				exit(EXIT_FAILURE);
-			pause();
 			c = c - binary;
 		}
 		else
 		{
+			write(1, "0", 1);
 			if (kill(pidserver, SIGUSR2) == -1)
 				exit(EXIT_FAILURE);
-			pause();
 		}
 		binary = binary / 2;
 		bit++;
@@ -61,29 +76,15 @@ void	sendBits(int pidserver, unsigned char c)
 	}
 }
 
-void	recived_bites(int bit)
-{
-	if (bit == SIGUSR1)
-		write(1, "Bit recived!\n", 13);
-	else
-	{
-		write(1, "Message recived correctly!\n", 29);
-		exit(EXIT_SUCCESS);
-	}
-}
-
 int	main(int argc, char **argv)
 {
-	int		i = 0;
-	int		pidserver;
+	int	i;
+	int	pidserver;
 
-	errorHandler(argc, argv);
+	i = 0;
+	error_handler(argc, argv);
 	pidserver = ft_atoi(argv[1]);
-	signal(SIGUSR1, recived_bites);
-	signal(SIGUSR2, recived_bites);
-	while(argv[2][i])
-		sendBits(pidserver, argv[2][i++]);
-	sendBits(pidserver, argv[2][i]);
-	while(1)
-		pause();
+	while (argv[2][i])
+		send_bits(pidserver, argv[2][i++]);
+	send_bits(pidserver, argv[2][i]);
 }

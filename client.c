@@ -6,7 +6,7 @@
 /*   By: iamoros- <iamoros-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 23:59:44 by iamoros-          #+#    #+#             */
-/*   Updated: 2022/09/29 00:39:47 by iamoros-         ###   ########.fr       */
+/*   Updated: 2022/09/29 13:07:04 by iamoros-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,12 @@ void	send_bits(int pidserver, unsigned char c)
 	{
 		if (c >= binary)
 		{
-			write(1, "1", 1);
 			if (kill(pidserver, SIGUSR1) == -1)
 				exit(EXIT_FAILURE);
 			c = c - binary;
 		}
 		else
 		{
-			write(1, "0", 1);
 			if (kill(pidserver, SIGUSR2) == -1)
 				exit(EXIT_FAILURE);
 		}

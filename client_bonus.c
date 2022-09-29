@@ -6,7 +6,7 @@
 /*   By: iamoros- <iamoros-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 00:00:02 by iamoros-          #+#    #+#             */
-/*   Updated: 2022/09/29 00:16:41 by iamoros-         ###   ########.fr       */
+/*   Updated: 2022/09/29 13:48:48 by iamoros-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,18 +61,19 @@ void	send_bits(int pidserver, unsigned char c)
 		{
 			if (kill(pidserver, SIGUSR1) == -1)
 				exit(EXIT_FAILURE);
-			pause();
+			usleep(500);
 			c = c - binary;
 		}
 		else
 		{
 			if (kill(pidserver, SIGUSR2) == -1)
 				exit(EXIT_FAILURE);
-			pause();
+			usleep(500);
+			//pause();
 		}
 		binary = binary / 2;
 		bit++;
-		usleep(50);
+		usleep(100);
 	}
 }
 
@@ -89,8 +90,8 @@ void	recived_bites(int bit)
 
 int	main(int argc, char **argv)
 {
-	int		i;
-	int		pidserver;
+	int	i;
+	int	pidserver;
 
 	i = 0;
 	error_handler(argc, argv);
@@ -101,5 +102,7 @@ int	main(int argc, char **argv)
 		send_bits(pidserver, argv[2][i++]);
 	send_bits(pidserver, argv[2][i]);
 	while (1)
+	{
 		pause();
+	}
 }

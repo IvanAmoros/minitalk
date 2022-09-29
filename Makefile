@@ -58,7 +58,7 @@ clean:
 fclean: clean
 	${RM} ${CLIENT_EX} ${SERVER_EX}
 	${RM} ${CLIENT_BNS} ${SERVER_BNS}
-	make fclean ${LIB_DIR}
+	make fclean -C ${LIB_DIR}
 
 re: fclean all
 

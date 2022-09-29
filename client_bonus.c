@@ -6,7 +6,7 @@
 /*   By: iamoros- <iamoros-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 00:00:02 by iamoros-          #+#    #+#             */
-/*   Updated: 2022/09/29 13:48:48 by iamoros-         ###   ########.fr       */
+/*   Updated: 2022/09/29 13:50:19 by iamoros-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ void	send_bits(int pidserver, unsigned char c)
 			if (kill(pidserver, SIGUSR2) == -1)
 				exit(EXIT_FAILURE);
 			usleep(500);
-			//pause();
 		}
 		binary = binary / 2;
 		bit++;

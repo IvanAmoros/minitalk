@@ -6,7 +6,6 @@ SERVER_BNS = server_bonus
 
 LIB_DIR = Libft/
 LIB = ${LIB_DIR}libft.a
-PRINTF = ../../42cursus/Printf/libftprintf.a
 
 CLIENT_SRC = client.c
 SERVER_SRC = server.c
@@ -37,10 +36,10 @@ all: makelib ${NAME}
 ${NAME}: ${CLIENT_EX} ${SERVER_EX}
 
 ${CLIENT_EX}: ${CLIENT_OBJ}
-	${CC} ${CFLAGS} ${XFLAGS} ${CLIENT_OBJ} ${LIB} ${PRINTF} -o ${CLIENT_EX}
+	${CC} ${CFLAGS} ${XFLAGS} ${CLIENT_OBJ} ${LIB} -o ${CLIENT_EX}
 
 ${SERVER_EX}: ${SERVER_OBJ}
-	${CC} ${CFLAGS} ${XFLAGS} ${SERVER_OBJ} ${LIB} ${PRINTF} -o ${SERVER_EX}
+	${CC} ${CFLAGS} ${XFLAGS} ${SERVER_OBJ} ${LIB} -o ${SERVER_EX}
 
 bonus: makelib ${CLIENT_BNS} ${SERVER_BNS}
 
